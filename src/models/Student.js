@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-// uncomment codes 
-
 const studentSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -19,16 +17,16 @@ const studentSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    grade_point:{
+    grade_point: {
         type: Number,
         required: true
     },
-    time:{
+    time: {
         type: Date,
         default: Date.now,
         required: true
     },
-    isDeleted:{
+    isDeleted: {
         type: Boolean,
         default: false,
         required: true,

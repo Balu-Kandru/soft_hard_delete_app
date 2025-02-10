@@ -11,82 +11,74 @@ app.use(express.json());
 
 // Get all the students
 app.get('/students', async (req, res) => {
-    // write your codes here
-    Student.find({}).then((data)=>{
+    Student.find({}).then((data) => {
         res.status(200).json(data)
-    }).catch((err)=>{
+    }).catch((err) => {
         res.status(400).send(err)
     })
 })
 
 // Add student to database
-app.post('/students', async (req, res) =>{
-    // write your codes here
+app.post('/students', async (req, res) => {
     Student.create({
-        isDeleted:false,
-        name:req.body.name,
-        sex:req.body.sex,
-        class:req.body.class,
-        age:req.body.age,
-        grade_point:req.body.grade_point
-    }).then((data)=>{
-        res.status(200).json({data})
-    }).catch((err)=>{
+        isDeleted: false,
+        name: req.body.name,
+        sex: req.body.sex,
+        class: req.body.class,
+        age: req.body.age,
+        grade_point: req.body.grade_point
+    }).then((data) => {
+        res.status(200).json({ data })
+    }).catch((err) => {
         res.status(400).send(err)
     })
 })
 
 // Get specific student
-app.get('/students/:id', async (req, res) =>{
-    // write your codes here
-    Student.findById(req.params.id).then((data)=>{
+app.get('/students/:id', async (req, res) => {
+    Student.findById(req.params.id).then((data) => {
         res.status(200).send(data)
-    }).catch((err)=>{
+    }).catch((err) => {
         res.status(400).send(err)
     })
 })
 
 // delete specific student
-app.delete('/students/:id', async (req, res) =>{
-    // write your codes here
-    if(req.query.type=="soft"){
-        Student.findById(req.params.id).then((details)=>{
-            if(details==null){
+app.delete('/students/:id', async (req, res) => {
+    if (req.query.type == "soft") {
+        Student.findById(req.params.id).then((details) => {
+            if (details == null) {
                 res.status(400).send("user details not found")
-            }else{
-                if(details.isDeleted==false){
-                    Student.findByIdAndUpdate(req.params.id,{isDeleted:true},(err,user)=>{
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.status(200)
+            } else {
+                if (details.isDeleted == false) {
+                    Student.findByIdAndUpdate(req.params.id, { isDeleted: true }, (err) => {
+                        if (err) {
+                            res.status(500).send("something went wrong")
                         }
-                    }).then((dat)=>{
-                        res.send(dat)
+                    }).then((data) => {
+                        res.status(200).send(`${data.name} is soft deleted`)
                     })
-                }else{
+                } else {
                     res.status(403).send("no longer exist/record not found")
                 }
             }
-            
+
         })
-    }else{
-        Student.findByIdAndDelete(req.params.id,(err,data)=>{
-            if(err){
-                console.log(err)
-            }
-            else{
-                if(data==null){
+    } else {
+        Student.findByIdAndDelete(req.params.id, (err, data) => {
+            if (err) {
+                res.status(500).send("something went wrong")
+            } else {
+                if (data === null) {
                     res.status(403).send("no user exits")
-                }else{
-                    res.status(200).send(`${data.name} is hard deleted(from database)`)
+                } else {
+                    res.status(200).send(`${data.name} is hard deleted`)
                 }
-                
+
             }
         })
     }
-    //console.log(req)
-}) 
+})
 
 
 module.exports = app;
